@@ -1,0 +1,95 @@
+1. npm init -y for creating package.json
+
+2. Then npm install (express,body-parser) , npm install --save-dev 
+
+3. Then create express skeleton :-
+
+	const express = require('express');
+	const bodyParser = require('body-parser');
+	const app = express();
+
+	app.get('/',(req,res)=>{
+    	res.send('This is Working.')
+	})
+
+	app.listen(3000, ()=>{
+    	console.log('App is running on port 3000');
+	})
+
+4. Go to Postman then do localhost/portNumber for cheking.
+
+5. After this setup now plan for API.
+	/*
+	Some Routing
+	/ --> res = this is working
+	/Signin --> POST = success/fail (For security purpose we are using POST method)
+	/register --> POST = user
+	/profile/:userId --> GET = user
+	/image --> PUT = user (For Ranking)
+	*/ 
+
+6. Signin ;-
+    app.post('/signin', (req,res)=>{
+    	if(req.body.email === database.users[0].email && req.body.pass === database.users[0].pass)
+        {
+        res.json('success');
+    	}
+    	else{
+        res.status(400).json('Error Logging in');
+   	 }
+    
+	})
+
+ 7. // Register :-
+
+app.post('/register',(req,res)=>{
+    const {email, name , pass} = req.body;
+        database.users.push({
+        id: '125',
+        name: name,
+        email: email,
+        pass: pass,
+        entries: 0,
+        joined: new Date()
+    })
+    res.json(database.users[database.users.length-1])
+})
+
+8. // Profile
+
+app.get('/profile/:id', (req,res)=>{
+    const {id} = req.params;
+    let found = false;
+    database.users.forEach(user => {
+        if(user.id === id){
+            found= true;
+           return res.json(user);
+        }
+    })
+    if(!found)
+    {
+        res.status(404).json("No such id");
+    }
+})
+
+9. // Image Update the user to increase the entry count
+
+app.post('/image', (req,res)=>{
+    const {id} = req.body;
+    let found = false;
+    database.users.forEach(user => {
+        if(user.id === id){
+            found= true;
+            user.entries++ ;
+           return res.json(user.entries);
+        }
+    })
+    if(!found)
+    {
+        res.status(404).json("No such id");
+    }
+})
+
+10. Using bcrypt-nodejs for storing users password
+
+11. npm install cors for testing locally
